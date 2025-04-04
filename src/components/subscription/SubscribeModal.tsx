@@ -133,5 +133,3 @@ const SubscribeModal = ({ isOpen, onClose }: SubscribeModalProps) => {
 };
 
 export default SubscribeModal;
-
-<lov-add-dependency>@stripe/stripe-js@latest</lov-add-dependency>
