@@ -2,10 +2,25 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import ProfileButton from "./auth/ProfileButton";
+import LoginModal from "./auth/LoginModal";
+import SubscribeModal from "./subscription/SubscribeModal";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
   const navigate = useNavigate();
+  const { user, isSubscribed } = useAuth();
+
+  const handleSubscribeClick = () => {
+    if (user) {
+      setShowSubscribeModal(true);
+    } else {
+      setShowLoginModal(true);
+    }
+  };
 
   return (
     <header className="bg-white py-4 border-b border-gray-100">
@@ -25,13 +40,26 @@ const Header = () => {
           <a href="#precios" className="text-gray-700 hover:text-brand-blue transition-colors">
             Precios
           </a>
-          <Button 
-            variant="default" 
-            className="bg-brand-blue hover:bg-brand-darkBlue text-white"
-            onClick={() => navigate("/crear-factura")}
-          >
-            Probar gratis
-          </Button>
+          {!isSubscribed && (
+            <Button 
+              variant="default" 
+              className="bg-brand-blue hover:bg-brand-darkBlue text-white"
+              onClick={handleSubscribeClick}
+            >
+              {user ? "Suscribirse" : "Probar gratis"}
+            </Button>
+          )}
+          {user ? (
+            <ProfileButton />
+          ) : (
+            <Button 
+              variant="outline" 
+              className="border-gray-300" 
+              onClick={() => setShowLoginModal(true)}
+            >
+              Iniciar sesión
+            </Button>
+          )}
         </nav>
 
         {/* Mobile Menu Button */}
@@ -74,19 +102,48 @@ const Header = () => {
             >
               Precios
             </a>
-            <Button 
-              variant="default" 
-              className="bg-brand-blue hover:bg-brand-darkBlue text-white w-full"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate("/crear-factura");
-              }}
-            >
-              Probar gratis
-            </Button>
+            {!isSubscribed && (
+              <Button 
+                variant="default" 
+                className="bg-brand-blue hover:bg-brand-darkBlue text-white w-full"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleSubscribeClick();
+                }}
+              >
+                {user ? "Suscribirse" : "Probar gratis"}
+              </Button>
+            )}
+            {user ? (
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  navigate("/profile");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Mi Perfil
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setShowLoginModal(true);
+                }}
+              >
+                Iniciar sesión
+              </Button>
+            )}
           </nav>
         </div>
       )}
+
+      {/* Modals */}
+      <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      <SubscribeModal isOpen={showSubscribeModal} onClose={() => setShowSubscribeModal(false)} />
     </header>
   );
 };
