@@ -4,9 +4,24 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginModal from "@/components/auth/LoginModal";
+import SubscribeModal from "@/components/subscription/SubscribeModal";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const { user } = useAuth();
+
+  const handleSubscribeClick = () => {
+    if (user) {
+      setShowSubscribeModal(true);
+    } else {
+      setShowLoginModal(true);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -173,7 +188,10 @@ const Index = () => {
                     </li>
                   </ul>
                   
-                  <Button className="w-full bg-brand-blue hover:bg-brand-darkBlue text-white">
+                  <Button 
+                    className="w-full bg-brand-blue hover:bg-brand-darkBlue text-white"
+                    onClick={handleSubscribeClick}
+                  >
                     Suscribirse
                   </Button>
                 </div>
@@ -184,6 +202,16 @@ const Index = () => {
       </main>
       
       <Footer />
+
+      {/* Modals */}
+      <LoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
+      />
+      <SubscribeModal 
+        isOpen={showSubscribeModal} 
+        onClose={() => setShowSubscribeModal(false)} 
+      />
     </div>
   );
 };
