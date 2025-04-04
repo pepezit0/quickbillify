@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import LoginModal from "../auth/LoginModal";
 import { useToast } from "@/hooks/use-toast";
 import { loadStripe } from "@stripe/stripe-js";
+import { CreditCard } from "lucide-react";
 
 interface SubscribeModalProps {
   isOpen: boolean;
@@ -108,6 +109,7 @@ const SubscribeModal = ({ isOpen, onClose }: SubscribeModalProps) => {
                 onClick={handleSubscribe}
                 disabled={loading}
               >
+                <CreditCard className="mr-2" />
                 {loading ? "Procesando..." : "Suscribirme ahora"}
               </Button>
               
